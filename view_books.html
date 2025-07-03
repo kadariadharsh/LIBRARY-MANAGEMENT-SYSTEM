@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Books - Library Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .table th {
+            background-color: #f8f9fa;
+        }
+        .alert {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Library Books</h2>
+            <div>
+                {% if session['role'] == 'admin' %}
+                    <a href="/add-book" class="btn btn-primary">Add New Book</a>
+                {% endif %}
+                <a href="/issued-books" class="btn btn-warning">Issued Books</a>
+                <a href="/" class="btn btn-secondary">Back to Home</a>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Department</th>
+                        <th>Purchase Date</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr>
+                        <td>{{ book.id }}</td>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.department }}</td>
+                        <td>{{ book.purchase_date }}</td>
+                        <td>${{ "%.2f"|format(book.price) }}</td>
+                        <td>
+                            {% if 'Issued to' in book.status %}
+                                <span class="badge bg-warning text-dark">{{ book.status }}</span>
+                            {% else %}
+                                <span class="badge bg-success">Available</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if 'Available' in book.status and session['role'] == 'admin' %}
+                                <a href="/issue-book?book_id={{ book.id }}" class="btn btn-sm btn-primary">Issue</a>
+                            {% endif %}
+                            {% if session['role'] == 'admin' %}
+                                <a href="/edit-book/{{ book.id }}" class="btn btn-sm btn-info">Edit</a>
+                                <button class="btn btn-sm btn-danger" onclick="deleteBook({{ book.id }})">Delete</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function deleteBook(id) {
+            if (confirm('Are you sure you want to delete this book?')) {
+                window.location.href = '/delete-book/' + id;
+            }
+        }
+    </script>
+</body>
+</html>

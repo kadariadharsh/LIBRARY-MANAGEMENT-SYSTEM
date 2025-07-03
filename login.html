@@ -1,0 +1,155 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div style="max-width: 500px; margin: 30px auto 0 auto;">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert" style="border: 2px solid #333; box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 1.1rem;">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.35);
+            z-index: 0;
+        }
+        .login-container {
+            background-color: rgba(255,255,255,0.97);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            z-index: 1;
+        }
+        .centered-flex {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .signup-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .signup-link a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+        #signupForm {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-overlay"></div>
+    <div class="centered-flex">
+        <div class="login-container">
+            <div class="login-header">
+                <h2>Library Management</h2>
+                <p id="loginText">Please login to continue</p>
+            </div>
+            <form id="loginForm" method="POST" action="{{ url_for('login') }}">
+                <div class="mb-3">
+                    <label class="form-label">Login as:</label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="role" id="roleUser" value="user" checked>
+                        <label class="form-check-label" for="roleUser">User</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="role" id="roleAdmin" value="admin">
+                        <label class="form-check-label" for="roleAdmin">Admin</label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+            </form>
+            <form id="signupForm" method="POST" action="{{ url_for('signup') }}">
+                <div class="mb-3">
+                    <label for="signupUsername" class="form-label">Choose Username</label>
+                    <input type="text" class="form-control" id="signupUsername" name="username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="signupEmail" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="signupEmail" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="signupPhone" class="form-label">Phone Number</label>
+                    <input type="text" class="form-control" id="signupPhone" name="phone" required>
+                </div>
+                <div class="mb-3">
+                    <label for="signupPassword" class="form-label">Choose Password</label>
+                    <input type="password" class="form-control" id="signupPassword" name="password" required>
+                </div>
+                <div class="mb-3">
+                    <label for="signupConfirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="signupConfirmPassword" name="confirm_password" required>
+                </div>
+                <input type="hidden" name="role" value="user">
+                <button type="submit" class="btn btn-success w-100">Sign Up as User</button>
+            </form>
+            <div class="signup-link">
+                <a href="#" id="toggleForm">Don't have an account? Sign up</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('toggleForm').addEventListener('click', function(e) {
+            e.preventDefault();
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const loginText = document.getElementById('loginText');
+            const toggleLink = document.getElementById('toggleForm');
+            if (loginForm.style.display !== 'none') {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+                loginText.textContent = 'Create a new user account';
+                toggleLink.textContent = 'Already have an account? Login';
+            } else {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+                loginText.textContent = 'Please login to continue';
+                toggleLink.textContent = 'Don\'t have an account? Sign up';
+            }
+        });
+    </script>
+</body>
+</html> 

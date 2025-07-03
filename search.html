@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Books</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h2>Search Books</h2>
+    <form method="GET">
+        <input type="text" name="query" placeholder="Enter title or author">
+        <button type="submit">Search</button>
+    </form>
+
+   
+        <h3>Results:</h3>
+        <table border="1">
+            <tr><th>Title</th><th>Author</th><th>Department</th><th>Price</th></tr>
+            {% for book in results %}
+            <tr>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.department }}</td>
+                <td>{{ book.price }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+  
+
+    <a href="/" class="btn btn-secondary">Back to Home</a>
+</body>
+</html>
